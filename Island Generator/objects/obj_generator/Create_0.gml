@@ -5,11 +5,15 @@ currentIteration=0
 
 amountOfIterations=50
 
-initialNodes=600
+initialNodes=800
 
 nodeKillChance=33
 
-#region create the basic 
+reproductionAmount=2
+
+overpopulationCount=4
+
+#region create the basic nodes
 repeat(initialNodes)
 {
 	var _inst=instance_create_depth(irandom(room_width),irandom(room_height),depth,obj_land)
@@ -36,7 +40,7 @@ function iterate_islands(){
 			var _list = ds_list_create();
 			var neighborCount = collision_rectangle_list(x - 16, y - 16, x + 16, y + 16, obj_land, false, true, _list, false);
 			ds_list_destroy(_list);
-			if(neighborCount<2)
+			if(neighborCount<other.reproductionAmount)
 			{
 				var _inst2=instance_create_depth(x+choose(-16,0,16),y+choose(-16,0,16),depth,obj_land)
 				while(_inst2.x==x&&_inst2==y)
@@ -45,7 +49,7 @@ function iterate_islands(){
 					y=choose(-16,0,16)
 				}
 			}
-			else if(neighborCount>8)
+			else if(neighborCount>other.overpopulationCount)
 			{
 				instance_destroy()
 			}
@@ -66,7 +70,7 @@ function iterate_islands(){
 	currentIteration++
 }
 
-/// @description             Cleans up the shapes of islands so they look more smooth.
+/// @description             Cleans up the shapes of islands so they look more smooth and like actual islands.
 function make_islands(){
 	#region get empty space
 	var _islandList=[]
